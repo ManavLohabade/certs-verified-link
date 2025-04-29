@@ -8,11 +8,11 @@ interface LayoutProps {
   maxWidth?: string;
 }
 
-const Layout: React.FC<LayoutProps> = ({ children, maxWidth = "max-w-2xl" }) => {
+const Layout: React.FC<LayoutProps> = ({ children, maxWidth = "max-w-4xl" }) => {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-white to-blue-50">
       <Header />
-      <main className="flex-grow py-8 px-6">
+      <main className="flex-grow py-12 px-6">
         <div className={`container mx-auto ${maxWidth}`}>
           {children}
         </div>
