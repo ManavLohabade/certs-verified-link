@@ -2,7 +2,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Badge } from "./ui/badge";
-import { Certificate, Shield } from "lucide-react";
+import { Award, Shield } from "lucide-react";
 
 const Footer: React.FC = () => {
   return (
@@ -11,7 +11,7 @@ const Footer: React.FC = () => {
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="mb-4 md:mb-0">
             <p className="flex items-center text-gray-700">
-              <Certificate className="h-4 w-4 mr-2 text-certificate-blue" />
+              <Award className="h-4 w-4 mr-2 text-certificate-blue" />
               © {new Date().getFullYear()} The Learners Den
             </p>
             <p className="text-sm text-gray-500 mt-1">
