@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,6 +62,13 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				// Certificate generator specific colors
+				certificate: {
+					blue: '#1a73e8',
+					gold: '#ffc107',
+					lightBlue: '#e8f0fe',
+					darkBlue: '#0b4f9e'
 				}
 			},
 			borderRadius: {
