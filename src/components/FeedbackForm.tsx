@@ -1,16 +1,11 @@
 
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { submitFeedback, fetchEvents } from "../lib/api";
-import { Button } from "./ui/button";
-import { Textarea } from "./ui/textarea";
+import { submitFeedback, fetchEvents } from "@/lib/api";
+import { Event } from "@/types/models";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-
-interface Event {
-  id: string;
-  title: string;
-  date: string;
-}
 
 const FeedbackForm: React.FC = () => {
   const [feedback, setFeedback] = useState("");

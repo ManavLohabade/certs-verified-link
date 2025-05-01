@@ -1,26 +1,23 @@
 
-import React, { ReactNode } from "react";
+import React from "react";
+import Header from "./Header";
+import Footer from "./Footer";
 
 interface LayoutProps {
-  children: ReactNode;
+  children: React.ReactNode;
+  maxWidth?: string;
 }
 
-const Layout: React.FC<LayoutProps> = ({ children }) => {
+const Layout: React.FC<LayoutProps> = ({ children, maxWidth = "max-w-4xl" }) => {
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm py-4 px-6">
-        <div className="container mx-auto">
-          <h1 className="text-xl font-bold text-gray-800">Certificate Verification</h1>
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-white to-blue-50">
+      <Header />
+      <main className="flex-grow py-12 px-6">
+        <div className={`container mx-auto ${maxWidth}`}>
+          {children}
         </div>
-      </header>
-      <main className="container mx-auto py-6 px-4 sm:px-6 lg:px-8">
-        {children}
       </main>
-      <footer className="bg-white shadow-sm py-4 px-6 mt-auto">
-        <div className="container mx-auto text-center text-gray-500 text-sm">
-          &copy; {new Date().getFullYear()} Certificate Verification System
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

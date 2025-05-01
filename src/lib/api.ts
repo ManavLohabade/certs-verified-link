@@ -1,110 +1,129 @@
 
-// Define proper types for the API responses
-interface Event {
-  id: string;
-  title: string;
-  date: string;
+import { toast } from "sonner";
+import { Event, ValidationResponse, VerificationResponse } from "@/types/models";
+
+// Mock API endpoints - these would connect to your backend in production
+const API_BASE = "/api";
+
+// Mock events data
+const MOCK_EVENTS: Event[] = [
+  {
+    id: "1",
+    title: "NextGen Hackathon",
+    feedbackRequired: true,
+    certificateTemplatePath: "/templates/hackathon.png"
+  },
+  {
+    id: "2",
+    title: "React Workshop 2025",
+    feedbackRequired: true,
+    certificateTemplatePath: "/templates/workshop.png"
+  },
+  {
+    id: "3",
+    title: "AI Summit",
+    feedbackRequired: true,
+    certificateTemplatePath: "/templates/summit.png"
+  }
+];
+
+// Mock certificates data
+const MOCK_CERTIFICATES = new Map([
+  ["abc123xyz", {
+    valid: true,
+    name: "Manav Lohabade",
+    event: "NextGen Hackathon",
+    issuedAt: "2025-04-29"
+  }],
+  ["def456uvw", {
+    valid: true,
+    name: "John Doe",
+    event: "React Workshop 2025",
+    issuedAt: "2025-04-28"
+  }]
+]);
+
+export async function fetchEvents(): Promise<Event[]> {
+  // In production, this would hit your backend API
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(MOCK_EVENTS), 500);
+  });
 }
 
-interface ValidationResponse {
-  hasSubmitted: boolean;
-  certificateUrl?: string;
-}
-
-export async function verifyCertificate(certId: string) {
+export async function validateUser(email: string, eventId: string): Promise<ValidationResponse> {
   try {
-    // In a real application, this would be a fetch to your API
-    // For demonstration, we're returning mock data
+    // Mock API call - in production this would be a real fetch
     return new Promise((resolve) => {
       setTimeout(() => {
-        if (certId === "invalid") {
+        // Simulate a user who's already submitted feedback for event 1
+        if (email === "test@example.com" && eventId === "1") {
           resolve({
-            valid: false
+            hasSubmitted: true,
+            certificateUrl: "/certs/abc123xyz.pdf"
           });
         } else {
-          resolve({
-            valid: true,
-            name: "John Doe",
-            email: "john.doe@example.com",
-            eventTitle: "Web Development Bootcamp",
-            issueDate: "2025-04-15"
-          });
+          resolve({ hasSubmitted: false });
         }
-      }, 1000);
+      }, 800);
     });
   } catch (error) {
-    console.error("Error verifying certificate:", error);
+    toast.error("Failed to validate user");
     throw error;
   }
 }
 
-/**
- * Fetch all events
- */
-export const fetchEvents = async (): Promise<Event[]> => {
-  // Mock implementation for demonstration
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve([
-        {
-          id: "evt-001",
-          title: "Web Development Bootcamp",
-          date: "2025-04-10"
-        },
-        {
-          id: "evt-002",
-          title: "React Advanced Workshop",
-          date: "2025-05-20"
-        },
-        {
-          id: "evt-003",
-          title: "TypeScript Masterclass",
-          date: "2025-06-15"
+export async function submitFeedback(email: string, eventId: string, feedbackText: string): Promise<string> {
+  try {
+    // Mock API call - in production this would be a real fetch
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        // Generate a mock certificate ID
+        const certId = Math.random().toString(36).substring(2, 10);
+        toast.success("🎉 Certificate mailed to your address!");
+        resolve(certId);
+      }, 1500);
+    });
+  } catch (error) {
+    toast.error("Failed to submit feedback");
+    throw error;
+  }
+}
+
+export async function verifyCertificate(certId: string): Promise<VerificationResponse> {
+  try {
+    // Mock API call - in production this would be a real fetch
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const certData = MOCK_CERTIFICATES.get(certId);
+        if (certData) {
+          resolve({
+            valid: true,
+            ...certData
+          });
+        } else {
+          resolve({ valid: false });
         }
-      ]);
-    }, 500);
-  });
-};
+      }, 800);
+    });
+  } catch (error) {
+    toast.error("Failed to verify certificate");
+    throw error;
+  }
+}
 
-/**
- * Validate a user for an event
- */
-export const validateUser = async (email: string, eventId: string): Promise<ValidationResponse> => {
-  // Mock implementation for demonstration
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      // Simulate a user who has already submitted feedback (has certificate)
-      if (email.includes("existing")) {
-        resolve({
-          hasSubmitted: true,
-          certificateUrl: "https://example.com/certificates/cert-123.pdf"
-        });
-      } else {
-        // Simulate a new user who needs to submit feedback
-        resolve({
-          hasSubmitted: false
-        });
-      }
-    }, 500);
-  });
-};
-
-/**
- * Submit feedback and generate certificate
- */
-export const submitFeedback = async (email: string, eventId: string, feedbackText: string): Promise<string> => {
-  // Mock implementation for demonstration
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      // Return a mock certificate ID
-      resolve("cert-" + Date.now());
-    }, 1000);
-  });
-};
-
-/**
- * Get certificate download URL
- */
-export const getCertificateDownloadUrl = (certId: string): string => {
-  return `https://example.com/certificates/${certId}`;
-};
+export async function generateCertificate(email: string, eventId: string): Promise<string> {
+  try {
+    // Mock API call - in production this would be a real fetch
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        // Generate a mock certificate ID
+        const certId = Math.random().toString(36).substring(2, 10);
+        toast.success("Certificate generated successfully!");
+        resolve(certId);
+      }, 1500);
+    });
+  } catch (error) {
+    toast.error("Failed to generate certificate");
+    throw error;
+  }
+}

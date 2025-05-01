@@ -1,76 +1,65 @@
 
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
-import { verifyCertificate } from "../lib/api";
-import Layout from "../components/Layout";
-import VerificationBadge from "../components/VerificationBadge";
+import { useParams, useNavigate } from "react-router-dom";
+import { verifyCertificate } from "@/lib/api";
+import Layout from "@/components/Layout";
+import VerificationBadge from "@/components/VerificationBadge";
 import { toast } from "sonner";
-import { Card, CardContent, CardHeader } from "../components/ui/card";
-import { Button } from "../components/ui/button";
-import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
-
-interface CertificateData {
-  valid: boolean;
-  name?: string;
-  email?: string;
-  eventTitle?: string;
-  issueDate?: string;
-}
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 const VerifyPage: React.FC = () => {
   const { certId } = useParams<{ certId: string }>();
-  const [isLoading, setIsLoading] = useState(true);
-  const [certificate, setCertificate] = useState<CertificateData | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [isVerifying, setIsVerifying] = useState(true);
+  const [isValid, setIsValid] = useState(false);
+  const [certDetails, setDetails] = useState<{
+    name?: string;
+    event?: string;
+    issuedAt?: string;
+  }>({});
   const navigate = useNavigate();
   
   useEffect(() => {
-    const fetchCertificateDetails = async () => {
+    const verify = async () => {
       if (!certId) {
-        setError("No certificate ID provided");
-        setIsLoading(false);
+        toast.error("Invalid certificate ID");
         return;
       }
       
       try {
-        setIsLoading(true);
-        const data = await verifyCertificate(certId);
-        setCertificate(data as CertificateData);
+        setIsVerifying(true);
+        const response = await verifyCertificate(certId);
+        
+        setIsValid(response.valid);
+        setDetails({
+          name: response.name,
+          event: response.event,
+          issuedAt: response.issuedAt,
+        });
       } catch (error) {
-        setError("Verification failed");
-        toast.error("Could not verify certificate");
+        toast.error("Verification failed");
+        setIsValid(false);
       } finally {
-        setIsLoading(false);
+        setIsVerifying(false);
       }
     };
     
-    fetchCertificateDetails();
+    verify();
   }, [certId]);
-
-  if (isLoading) {
-    return (
-      <Layout>
-        <div className="flex flex-col items-center justify-center py-10">
-          <Loader2 className="h-10 w-10 animate-spin text-blue-500 mb-4" />
-          <p className="text-gray-600">Verifying certificate...</p>
-        </div>
-      </Layout>
-    );
-  }
   
-  if (error || !certificate) {
+  const handleGoHome = () => {
+    navigate("/");
+  };
+  
+  if (isVerifying) {
     return (
       <Layout>
-        <div className="flex flex-col items-center justify-center text-center py-10">
-          <XCircle className="h-16 w-16 text-red-500 mb-4" />
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Verification Failed</h1>
-          <p className="text-gray-600 mb-6">
-            {error || "Could not verify certificate. It may not exist or has been revoked."}
-          </p>
-          <VerificationBadge isValid={false} className="mb-6" />
-          <Button asChild>
-            <Link to="/">Return to Homepage</Link>
-          </Button>
+        <div className="text-center py-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-6">
+            Verifying Certificate
+          </h1>
+          <div className="w-16 h-16 border-4 border-certificate-blue border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <p className="mt-4 text-gray-600">Checking certificate authenticity...</p>
         </div>
       </Layout>
     );
@@ -78,56 +67,61 @@ const VerifyPage: React.FC = () => {
   
   return (
     <Layout>
-      <div className="flex flex-col items-center justify-center text-center py-8">
-        {certificate.valid ? (
-          <CheckCircle2 className="h-16 w-16 text-green-500 mb-4" />
-        ) : (
-          <XCircle className="h-16 w-16 text-red-500 mb-4" />
-        )}
+      <div className="text-center mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          Certificate Verification
+        </h1>
+        <p className="text-gray-600">
+          Verification results for certificate ID: {certId}
+        </p>
+      </div>
+      
+      <Card className="max-w-md mx-auto">
+        <CardHeader className="flex flex-row items-center justify-between">
+          <h2 className="text-xl font-semibold">Verification Result</h2>
+          <VerificationBadge isValid={isValid} />
+        </CardHeader>
         
-        <h1 className="text-3xl font-bold text-gray-900 mb-3">Certificate Verification</h1>
-        <VerificationBadge isValid={certificate.valid} className="mb-8" />
-        
-        {certificate.valid && (
-          <Card className="max-w-md w-full text-left">
-            <CardHeader>
-              <h2 className="text-xl font-semibold text-gray-800">Certificate Details</h2>
-            </CardHeader>
-            <CardContent className="space-y-4">
+        <CardContent className="space-y-4">
+          {isValid ? (
+            <>
               <div>
-                <p className="text-sm text-gray-500">Recipient Name</p>
-                <p className="font-medium">{certificate.name}</p>
-              </div>
-              
-              <div>
-                <p className="text-sm text-gray-500">Email Address</p>
-                <p className="font-medium">{certificate.email}</p>
+                <p className="text-sm text-gray-500">Name</p>
+                <p className="font-medium">{certDetails.name}</p>
               </div>
               
               <div>
                 <p className="text-sm text-gray-500">Event</p>
-                <p className="font-medium">{certificate.eventTitle}</p>
+                <p className="font-medium">{certDetails.event}</p>
               </div>
               
               <div>
-                <p className="text-sm text-gray-500">Issue Date</p>
-                <p className="font-medium">{certificate.issueDate}</p>
+                <p className="text-sm text-gray-500">Issued On</p>
+                <p className="font-medium">{certDetails.issuedAt}</p>
               </div>
               
-              <div>
-                <p className="text-sm text-gray-500">Certificate ID</p>
-                <p className="font-medium font-mono">{certId}</p>
+              <div className="pt-4">
+                <p className="text-sm text-green-600">
+                  ✓ This certificate has been verified as authentic
+                </p>
               </div>
-            </CardContent>
-          </Card>
-        )}
-        
-        <div className="mt-8">
-          <Button asChild>
-            <Link to="/">Return to Homepage</Link>
+            </>
+          ) : (
+            <div className="py-4">
+              <p className="text-red-600 mb-4">
+                This certificate ID could not be verified.
+              </p>
+              <p className="text-gray-600">
+                The certificate ID may be invalid or may have been revoked.
+              </p>
+            </div>
+          )}
+          
+          <Button onClick={handleGoHome} variant="outline" className="w-full mt-4">
+            Return to Home
           </Button>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </Layout>
   );
 };

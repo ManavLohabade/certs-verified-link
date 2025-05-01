@@ -1,17 +1,12 @@
 
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { fetchEvents, validateUser } from "../lib/api";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { fetchEvents, validateUser } from "@/lib/api";
+import { Event } from "@/types/models";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-
-interface Event {
-  id: string;
-  title: string;
-  date: string;
-}
 
 const EmailForm: React.FC = () => {
   const [email, setEmail] = useState("");
