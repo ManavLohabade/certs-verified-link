@@ -1,12 +1,17 @@
 
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { fetchEvents, validateUser } from "@/lib/api";
-import { Event } from "@/types/models";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { fetchEvents, validateUser } from "../lib/api";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { toast } from "sonner";
+
+interface Event {
+  id: string;
+  title: string;
+  date: string;
+}
 
 const EmailForm: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -19,9 +24,9 @@ const EmailForm: React.FC = () => {
     const loadEvents = async () => {
       try {
         const eventsList = await fetchEvents();
-        setEvents(eventsList);
+        setEvents(eventsList as Event[]);
         if (eventsList.length > 0) {
-          setEventId(eventsList[0].id);
+          setEventId((eventsList as Event[])[0].id);
         }
       } catch (error) {
         toast.error("Failed to load events");
