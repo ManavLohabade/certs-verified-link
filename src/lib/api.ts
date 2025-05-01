@@ -1,4 +1,16 @@
 
+// Define proper types for the API responses
+interface Event {
+  id: string;
+  title: string;
+  date: string;
+}
+
+interface ValidationResponse {
+  hasSubmitted: boolean;
+  certificateUrl?: string;
+}
+
 export async function verifyCertificate(certId: string) {
   try {
     // In a real application, this would be a fetch to your API
@@ -29,7 +41,7 @@ export async function verifyCertificate(certId: string) {
 /**
  * Fetch all events
  */
-export const fetchEvents = async () => {
+export const fetchEvents = async (): Promise<Event[]> => {
   // Mock implementation for demonstration
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -57,7 +69,7 @@ export const fetchEvents = async () => {
 /**
  * Validate a user for an event
  */
-export const validateUser = async (email: string, eventId: string) => {
+export const validateUser = async (email: string, eventId: string): Promise<ValidationResponse> => {
   // Mock implementation for demonstration
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -80,7 +92,7 @@ export const validateUser = async (email: string, eventId: string) => {
 /**
  * Submit feedback and generate certificate
  */
-export const submitFeedback = async (email: string, eventId: string, feedbackText: string) => {
+export const submitFeedback = async (email: string, eventId: string, feedbackText: string): Promise<string> => {
   // Mock implementation for demonstration
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -93,6 +105,6 @@ export const submitFeedback = async (email: string, eventId: string, feedbackTex
 /**
  * Get certificate download URL
  */
-export const getCertificateDownloadUrl = (certId: string) => {
+export const getCertificateDownloadUrl = (certId: string): string => {
   return `https://example.com/certificates/${certId}`;
 };

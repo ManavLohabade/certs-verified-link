@@ -34,7 +34,7 @@ const FeedbackForm: React.FC = () => {
     const getEventDetails = async () => {
       try {
         const events = await fetchEvents();
-        const currentEvent = (events as Event[]).find(e => e.id === eventId);
+        const currentEvent = events.find(e => e.id === eventId);
         if (currentEvent) {
           setEvent(currentEvent);
         } else {

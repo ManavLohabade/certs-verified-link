@@ -24,9 +24,9 @@ const EmailForm: React.FC = () => {
     const loadEvents = async () => {
       try {
         const eventsList = await fetchEvents();
-        setEvents(eventsList as Event[]);
+        setEvents(eventsList);
         if (eventsList.length > 0) {
-          setEventId((eventsList as Event[])[0].id);
+          setEventId(eventsList[0].id);
         }
       } catch (error) {
         toast.error("Failed to load events");
